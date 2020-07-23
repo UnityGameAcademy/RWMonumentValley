@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// allows a target Transform to be rotated based on mouse click and drag
 [RequireComponent(typeof(Collider))]
 public class DragSpinner : MonoBehaviour
 {
@@ -12,19 +13,28 @@ public class DragSpinner : MonoBehaviour
         Z
     }
 
-    // Transform to spin
+    // transform to spin
     [SerializeField] private Transform targetToSpin;
 
+    // axis of rotation
     [SerializeField] private SpinAxis spinAxis = SpinAxis.X; 
 
-    // transform to calculater center of mouse drag
+    // used to calculate angle to mouse pointer
     [SerializeField] private Transform pivot;
 
+    // vector from pivot to mouse pointer
     private Vector2 directionToMouse;
+
+    // 
     private bool isSpinning;
 
+    //
     private float angleToMouse;
+
+    // angle to mouse on previous frame
     private float previousAngleToMouse;
+
+    // amount to rotate on this frame
     private Vector3 axisDirection;
 
     // minimum distance in pixels before activating mouse drag
@@ -56,18 +66,18 @@ public class DragSpinner : MonoBehaviour
             directionToMouse = Input.mousePosition - Camera.main.WorldToScreenPoint(pivot.position);
             angleToMouse = Mathf.Atan2(directionToMouse.y, directionToMouse.x) * Mathf.Rad2Deg;
 
-            // if we have dragged a minimum threshold, rotate the target to follow the CW/CCW mouse movements around the pivot
+            // if we have dragged a minimum threshold, rotate the target to follow the mouse movements around the pivot
             // (Unity uses left-handed coordinate system so positive rotations are clockwise)
             if (directionToMouse.magnitude > minDragDist)
             {
                 Vector3 newRotationVector = (previousAngleToMouse - angleToMouse) * axisDirection;
-                //targetToSpin.Rotate(new Vector3(previousAngleToMouse - angleToMouse, 0f, 0f));
                 targetToSpin.Rotate(newRotationVector);
                 previousAngleToMouse = angleToMouse;
             }
         }
     }
 
+    // begin spin 
     private void OnMouseDown()
     {
         isSpinning = true;
@@ -75,6 +85,7 @@ public class DragSpinner : MonoBehaviour
         previousAngleToMouse = Mathf.Atan2(directionToMouse.y, directionToMouse.x) * Mathf.Rad2Deg;
     }
 
+    // end spin on mouse release; then round to right angle
     private void OnMouseUp()
     {
         isSpinning = false;
