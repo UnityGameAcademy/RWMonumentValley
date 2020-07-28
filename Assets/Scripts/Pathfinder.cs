@@ -28,6 +28,8 @@ public class Pathfinder : MonoBehaviour
     public Node StartNode { get { return startNode; } set { startNode = value; } }
     public Node GoalNode { get { return goalNode; } set { goalNode = value; } }
 
+    [SerializeField] private Color pathColor = Color.green;
+
     private void Awake()
     {
         graph = GetComponent<Graph>();
@@ -113,6 +115,8 @@ public class Pathfinder : MonoBehaviour
 
     public void FindPath()
     {
+        float timeStarted = Time.realtimeSinceStartup;
+
         Debug.Log("FIND PATH STARTED....");
         if (startNode == null || goalNode == null)
         {
@@ -127,43 +131,70 @@ public class Pathfinder : MonoBehaviour
         // search the graph until we find the goal or explore all nodes
         while (!isComplete && frontierNodes != null && iterations < maxIterations)
         {
+            // safety 
             iterations++;
 
             // if we still have frontier Nodes to check
             if (frontierNodes.Count > 0)
             {
-
+                // remove the first Node
                 Node currentNode = frontierNodes[0];
                 frontierNodes.RemoveAt(0);
 
+                // and add to the exploredNodes
                 if (!exploredNodes.Contains(currentNode))
                 {
                     exploredNodes.Add(currentNode);
                 }
+
+                // add unexplored neighboring Nodes to frontier
                 ExpandFrontier(currentNode);
 
                 // if we have found the goal
                 if (frontierNodes.Contains(goalNode))
                 {
+                    // generate the Path to the goal
                     pathNodes = GetPathNodes();
                     isComplete = true;
                     hasFoundGoal = true;
-                    Debug.Log("Found goal:  " + goalNode.name);
                 }
             }
-
             // whole graph explored but no path found
             else
             {
                 isComplete = true;
             }
         }
-        Debug.Log("FIND PATH COMPLETE.... iterations:" + iterations);
 
+        float timeElapsed = Time.realtimeSinceStartup - timeStarted;
+        //Debug.Log("iterations:" + iterations + "  time: " + timeElapsed.ToString());
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
-        
+        if (isComplete)
+        {
+            foreach (Node node in pathNodes)
+            {
+                
+                if (node == goalNode || node == startNode)
+                {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawWireCube(node.transform.position, new Vector3(0.25f, 0.25f, 0.25f));
+                }
+                else
+                {
+                    Gizmos.color = pathColor;
+                    Gizmos.DrawWireSphere(node.transform.position, 0.15f);
+                }
+
+                Gizmos.color = Color.red;
+                if (node.PreviousNode != null)
+                {
+                    Gizmos.DrawLine(node.transform.position, node.PreviousNode.transform.position);
+                }
+
+            }
+        }
     }
 }
