@@ -29,4 +29,12 @@ public class Graph : MonoBehaviour
         }
         return null;
     }
+
+    public void ResetNodes()
+    {
+        foreach (Node node in allNodes)
+        {
+            node.PreviousNode = null;
+        }
+    }
 }

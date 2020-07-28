@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
+    #region INSPECTOR
     [SerializeField] private float gizmoRadius = 0.1f;
 
     [SerializeField] private Color defaultGizmoColor = Color.black;
     [SerializeField] private Color selectedGizmoColor = Color.blue;
 
+    // connected neighboring nodes
+    [SerializeField] private List<Edge> edges = new List<Edge>();
+    #endregion
+
+    #region PRIVATE
     private Graph graph;
+    private Node previousNode;
+    #endregion
 
-    private void Awake()
-    {
-        graph = Object.FindObjectOfType<Graph>();
-    }
-
+    #region STATIC
     // 3d compass directions to check for adjacent/neighboring Nodes
     public static Vector3[] neighborDirections =
 {
@@ -25,16 +29,29 @@ public class Node : MonoBehaviour
         new Vector3(0f, 0f, 1f),
         new Vector3(0f, 0f, -1f),
 
-        // ramp neighbors
+        //vertical neighbors
+
+
+        // ramp/stairs neighbors
         new Vector3(0.5f, 0.5f, 0f),
         new Vector3(-0.5f, 0.5f, 0f),
         new Vector3(0f, 0.5f, 0.5f),
         new Vector3(0f,0.5f, -0.5f)
 
     };
+    #endregion
 
-    // connected neighboring nodes
-    [SerializeField] private List<Edge> edges = new List<Edge>();
+    #region PROPERTIES
+    public Node PreviousNode { get { return previousNode; } set { previousNode = value; } }
+    public List<Edge> Edges => edges;
+    #endregion
+
+    private void Awake()
+    {
+        graph = Object.FindObjectOfType<Graph>();
+
+    }
+
 
     private void Start()
     {
@@ -90,7 +107,7 @@ public class Node : MonoBehaviour
         }
     }
 
-    // is the Neighbor currently in edges List?
+    // is a Node currently in edges List?
     private bool HasNeighbor(Node node)
     {
         foreach (Edge e in edges)
@@ -103,10 +120,13 @@ public class Node : MonoBehaviour
         return false;
     }
 
-    public void DisableEdge()
+    // set state if an Edge exists between a target Node
+    public void EnableEdge(Node targetNode, bool state)
     {
 
     }
+
+
 }
 
 // connection/link to neighboring node
