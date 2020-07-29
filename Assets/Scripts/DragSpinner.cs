@@ -25,16 +25,16 @@ public class DragSpinner : MonoBehaviour
     // vector from pivot to mouse pointer
     private Vector2 directionToMouse;
 
-    // 
+    // are we currently spinning?
     private bool isSpinning;
 
-    //
+    // angle (degrees) from clicked screen position 
     private float angleToMouse;
 
     // angle to mouse on previous frame
     private float previousAngleToMouse;
 
-    // amount to rotate on this frame
+    // Vector representing axis of rotation
     private Vector3 axisDirection;
 
     // minimum distance in pixels before activating mouse drag

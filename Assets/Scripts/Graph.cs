@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-
+// management class for all Nodes
 public class Graph : MonoBehaviour
 {
     // all of the Nodes in the current level/maze
@@ -28,6 +28,25 @@ public class Graph : MonoBehaviour
             }
         }
         return null;
+    }
+
+    // locate the closest Node at a target position 
+    public Node FindClosestNode(Node[] nodes, Vector3 pos)
+    {
+        Node closestNode = null;
+        float closestDistanceSqr = Mathf.Infinity;
+
+        foreach (Node n in nodes)
+        {
+            Vector3 diff = n.transform.position - pos;
+
+            if (diff.sqrMagnitude < closestDistanceSqr)
+            {
+                closestNode = n;
+                closestDistanceSqr = diff.sqrMagnitude;
+            }
+        }
+        return closestNode;
     }
 
     public void ResetNodes()

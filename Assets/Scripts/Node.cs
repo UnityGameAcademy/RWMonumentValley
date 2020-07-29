@@ -6,15 +6,16 @@ public class Node : MonoBehaviour
 {
     #region INSPECTOR
     [SerializeField] private float gizmoRadius = 0.1f;
-
     [SerializeField] private Color defaultGizmoColor = Color.black;
     [SerializeField] private Color selectedGizmoColor = Color.blue;
+    [SerializeField] private Color inactiveGizmoColor = Color.gray;
 
     // connected neighboring nodes
     [SerializeField] private List<Edge> edges = new List<Edge>();
     #endregion
 
     #region PRIVATE
+
     private Graph graph;
     private Node previousNode;
     #endregion
@@ -30,13 +31,32 @@ public class Node : MonoBehaviour
         new Vector3(0f, 0f, -1f),
 
         //vertical neighbors
+        new Vector3(0f, 1f, 0f),
+        new Vector3(0f, -1f, 0f),
 
+        // platform to upper stair neighbors
+        new Vector3(1f, 0.5f, 0f),
+        new Vector3(-1f, 0.5f, 0f),
+        new Vector3(0f, 0.5f, 1f),
+        new Vector3(0f,0.5f, -1f),
 
-        // ramp/stairs neighbors
-        new Vector3(0.5f, 0.5f, 0f),
-        new Vector3(-0.5f, 0.5f, 0f),
-        new Vector3(0f, 0.5f, 0.5f),
-        new Vector3(0f,0.5f, -0.5f)
+        // platform to lower stair neighbors
+        new Vector3(1f, -0.5f, 0f),
+        new Vector3(-1f, -0.5f, 0f),
+        new Vector3(0f, -0.5f, 1f),
+        new Vector3(0f,-0.5f, -1f),
+
+        // lower ramp to upper ramp neighbors
+        new Vector3(1f, 1f, 0f),
+        new Vector3(-1f, 1f, 0f),
+        new Vector3(0f, 1f, 1f),
+        new Vector3(0f, 1f, -1f),
+
+        // upper ramp to lower ramp neighbors
+        new Vector3(1f, -1f, 0f),
+        new Vector3(-1f, -1f, 0f),
+        new Vector3(0f, -1f, 1f),
+        new Vector3(0f, -1f, -1f),
 
     };
     #endregion
@@ -49,7 +69,6 @@ public class Node : MonoBehaviour
     private void Awake()
     {
         graph = Object.FindObjectOfType<Graph>();
-
     }
 
 
@@ -79,6 +98,7 @@ public class Node : MonoBehaviour
         {
             if (e.neighbor != null)
             {
+                Gizmos.color = (e.isActive) ? selectedGizmoColor:inactiveGizmoColor ;
                 Gizmos.DrawLine(transform.position, e.neighbor.transform.position);
             }
         }
@@ -121,9 +141,15 @@ public class Node : MonoBehaviour
     }
 
     // set state if an Edge exists between a target Node
-    public void EnableEdge(Node targetNode, bool state)
+    public void EnableEdge(Node neighborNode, bool state)
     {
-
+        foreach (Edge e in edges)
+        {
+            if (e.neighbor.Equals(neighborNode))
+            {
+                e.isActive = state;
+            }
+        }
     }
 
 

@@ -28,6 +28,7 @@ public class Pathfinder : MonoBehaviour
     public Node StartNode { get { return startNode; } set { startNode = value; } }
     public Node GoalNode { get { return goalNode; } set { goalNode = value; } }
 
+
     [SerializeField] private Color pathColor = Color.green;
 
     private void Awake()
@@ -56,7 +57,6 @@ public class Pathfinder : MonoBehaviour
         isComplete = false;
         hasFoundGoal = false;
     }
-
 
 
     // use a simple Breadth-first Search to explore the graph
@@ -123,9 +123,23 @@ public class Pathfinder : MonoBehaviour
             Debug.Log("Missing Start or Goal node =============");
             return;
         }
+
+        // special case if goalNode is the same as the startNode
+        if (startNode == goalNode)
+        {
+            List<Node> pathOfOne = new List<Node>();
+            pathOfOne.Add(goalNode);
+            pathNodes = pathOfOne;
+            isComplete = true;
+            Debug.Log("FIND PATH COMPLETE WITH ONE-NODE....");
+            return;
+        }
+
+        // prevents infinity loop
         const int maxIterations = 100;
         int iterations = 0;
 
+        // initialize all Nodes
         InitGraph();
 
         // search the graph until we find the goal or explore all nodes
@@ -157,17 +171,24 @@ public class Pathfinder : MonoBehaviour
                     pathNodes = GetPathNodes();
                     isComplete = true;
                     hasFoundGoal = true;
+                    Debug.Log("FIND PATH COMPLETE WITH GOAL....");
                 }
             }
             // whole graph explored but no path found
             else
             {
                 isComplete = true;
+                Debug.Log("FIND PATH COMPLETE NO GOAL FOUND....");
             }
         }
 
         float timeElapsed = Time.realtimeSinceStartup - timeStarted;
-        //Debug.Log("iterations:" + iterations + "  time: " + timeElapsed.ToString());
+    }
+
+    public void FindPath(Node goal)
+    {
+        goalNode = goal;
+        FindPath();
     }
 
     private void OnDrawGizmosSelected()
