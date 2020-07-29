@@ -23,7 +23,6 @@ public class Clickable : MonoBehaviour
         {
             graph = pathfinder.GetComponent<Graph>();
         }
-
     }
 
     private void OnMouseDown()
@@ -45,7 +44,4 @@ public class Clickable : MonoBehaviour
             pathfinder.FindPath(closestNode);
         }
     }
-
-
-
 }

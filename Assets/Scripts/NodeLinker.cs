@@ -40,6 +40,4 @@ public class Link
 
     // euler angle needed to activate link
     public Vector3 activeEulerAngle;
-
-
 }

@@ -71,7 +71,6 @@ public class Node : MonoBehaviour
         graph = Object.FindObjectOfType<Graph>();
     }
 
-
     private void Start()
     {
         if (graph != null)
@@ -151,8 +150,6 @@ public class Node : MonoBehaviour
             }
         }
     }
-
-
 }
 
 // connection/link to neighboring node

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 // allows a target Transform to be rotated based on mouse click and drag
 [RequireComponent(typeof(Collider))]
 public class DragSpinner : MonoBehaviour
@@ -22,6 +23,12 @@ public class DragSpinner : MonoBehaviour
     // used to calculate angle to mouse pointer
     [SerializeField] private Transform pivot;
 
+    // minimum distance in pixels before activating mouse drag
+    [SerializeField] private int minDragDist = 10;
+
+    [SerializeField] private NodeLinker nodeLinker;
+
+
     // vector from pivot to mouse pointer
     private Vector2 directionToMouse;
 
@@ -36,9 +43,6 @@ public class DragSpinner : MonoBehaviour
 
     // Vector representing axis of rotation
     private Vector3 axisDirection;
-
-    // minimum distance in pixels before activating mouse drag
-    [SerializeField] private int minDragDist = 10;
 
 
     void Start()
@@ -88,8 +92,14 @@ public class DragSpinner : MonoBehaviour
     // end spin on mouse release; then round to right angle
     private void OnMouseUp()
     {
+        // round result to nearest 90 degree angle
         isSpinning = false;
         RoundToRightAngles(targetToSpin);
+
+        if (nodeLinker)
+        {
+            nodeLinker.UpdateLinks();
+        }
     }
 
     // round to nearest 90 degrees

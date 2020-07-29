@@ -80,12 +80,15 @@ public class Pathfinder : MonoBehaviour
                 continue;
             }
 
-            // set the neighbor's previous node to this node
-            node.Edges[i].neighbor.PreviousNode = node;
+            // create breadcrumb trail if Edge is active
+            if (node.Edges[i].isActive)
+            {
+                // set the neighbor's previous node to this node
+                node.Edges[i].neighbor.PreviousNode = node;
 
-            // add neighbor Nodes to frontier Nodes
-            frontierNodes.Add(node.Edges[i].neighbor);
-
+                // add neighbor Nodes to frontier Nodes
+                frontierNodes.Add(node.Edges[i].neighbor);
+            }
         }
     }
 
