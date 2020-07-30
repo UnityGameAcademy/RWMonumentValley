@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     // visualization indicating where clicked
     [SerializeField] GameObject cursor;
+    [SerializeField] float moveSpeed;
 
     // pathfinding fields
     private Clickable[] clickables;
@@ -52,7 +53,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnClick(Node clickedNode)
     {
-        Debug.Log("PLAYERCONTROLLER OnClick: click at" + clickedNode.transform.position.ToString());
+        //Debug.Log("PLAYERCONTROLLER OnClick: click at" + clickedNode.transform.position.ToString());
 
         pathfinder.FindPath(clickedNode);
         FollowPath();
@@ -77,12 +78,13 @@ public class PlayerController : MonoBehaviour
 
     public void MoveToNode(Node node)
     {
-
+        
     }
 
     public void MoveToNearestNode()
     {
-
+        Node nearestNode = graph.FindClosestNode(transform.position);
+        MoveToNode(nearestNode);
     }
 
     public bool HasReachedGoal()
