@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-// activates or deactivates special edges
+// activates or deactivates special Edges between Nodes
 public class NodeLinker : MonoBehaviour
 {
     [SerializeField] public Link[] links;
 
-    // enable/disable links based on transform's euler angles
+    // enable/disable based on transform's euler angles
     public void UpdateLinks()
     {
         foreach (Link l in links)

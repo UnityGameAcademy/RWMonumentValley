@@ -18,8 +18,10 @@ public class Pathfinder : MonoBehaviour
     // Nodes that form a path to the goal Node
     private List<Node> pathNodes;
 
-    // have we completed the search
+    // is the search complete?
     private bool isComplete;
+
+    // has the goal been found?
     private bool hasFoundGoal;
 
     // structure containing all Nodes
@@ -27,6 +29,7 @@ public class Pathfinder : MonoBehaviour
 
     public Node StartNode { get { return startNode; } set { startNode = value; } }
     public Node GoalNode { get { return goalNode; } set { goalNode = value; } }
+    public List<Node> PathNodes => pathNodes;
 
 
     [SerializeField] private Color pathColor = Color.green;
@@ -36,11 +39,7 @@ public class Pathfinder : MonoBehaviour
         graph = GetComponent<Graph>();
     }
 
-    private void Start()
-    {
-        FindPath();
-    }
-
+    // initialize all Nodes/lists
     private void InitGraph()
     {
         if (graph == null || startNode == null || goalNode == null)
@@ -49,17 +48,19 @@ public class Pathfinder : MonoBehaviour
         }
 
         frontierNodes = new List<Node>();
-        frontierNodes.Add(startNode);
         exploredNodes = new List<Node>();
         pathNodes = new List<Node>();
 
         graph.ResetNodes();
+
         isComplete = false;
         hasFoundGoal = false;
+
+        // first Node
+        frontierNodes.Add(startNode);
     }
 
-
-    // use a simple Breadth-first Search to explore the graph
+    // use a simple Breadth-first Search to explore one iteration
     private void ExpandFrontier(Node node)
     {
         // validate Node
@@ -71,7 +72,7 @@ public class Pathfinder : MonoBehaviour
         // loop through all Edges
         for (int i = 0; i < node.Edges.Count; i++)
         {
-            // skip if already explored
+            // skip Edge if neighbor already explored or invalid
             if ( node.Edges[i] == null ||
                 node.Edges.Count == 0 ||
                 exploredNodes.Contains(node.Edges[i].neighbor) ||
@@ -80,7 +81,7 @@ public class Pathfinder : MonoBehaviour
                 continue;
             }
 
-            // create breadcrumb trail if Edge is active
+            // create PreviousNode breadcrumb trail if Edge is active
             if (node.Edges[i].isActive)
             {
                 // set the neighbor's previous node to this node
@@ -105,7 +106,7 @@ public class Pathfinder : MonoBehaviour
         }
         path.Add(goalNode);
 
-        // follow the breadcrumb trail 
+        // follow the breadcrumb trail, creating a path until it ends
         Node currentNode = goalNode.PreviousNode;
 
         while (currentNode != null)
@@ -118,9 +119,7 @@ public class Pathfinder : MonoBehaviour
 
     public void FindPath()
     {
-        float timeStarted = Time.realtimeSinceStartup;
 
-        Debug.Log("FIND PATH STARTED....");
         if (startNode == null || goalNode == null)
         {
             Debug.Log("Missing Start or Goal node =============");
@@ -138,17 +137,16 @@ public class Pathfinder : MonoBehaviour
             return;
         }
 
-        // prevents infinity loop
+        // safety prevents infinite loop
         const int maxIterations = 100;
         int iterations = 0;
 
         // initialize all Nodes
         InitGraph();
 
-        // search the graph until we find the goal or explore all nodes
+        // search the graph until goal is found or all nodes explored (or exceeding some limit)
         while (!isComplete && frontierNodes != null && iterations < maxIterations)
         {
-            // safety 
             iterations++;
 
             // if we still have frontier Nodes to check
@@ -177,7 +175,7 @@ public class Pathfinder : MonoBehaviour
                     Debug.Log("FIND PATH COMPLETE WITH GOAL....");
                 }
             }
-            // whole graph explored but no path found
+            // if whole graph explored but no path found
             else
             {
                 isComplete = true;
@@ -185,7 +183,7 @@ public class Pathfinder : MonoBehaviour
             }
         }
 
-        float timeElapsed = Time.realtimeSinceStartup - timeStarted;
+        //float timeElapsed = Time.realtimeSinceStartup - timeStarted;
     }
 
     public void FindPath(Node goal)
@@ -217,8 +215,12 @@ public class Pathfinder : MonoBehaviour
                 {
                     Gizmos.DrawLine(node.transform.position, node.PreviousNode.transform.position);
                 }
-
             }
         }
+    }
+
+    public void SetStartNode(Vector3 position)
+    {
+        StartNode = graph.FindClosestNode(position);
     }
 }

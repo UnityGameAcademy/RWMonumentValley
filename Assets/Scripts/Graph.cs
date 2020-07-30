@@ -49,6 +49,11 @@ public class Graph : MonoBehaviour
         return closestNode;
     }
 
+    public Node FindClosestNode(Vector3 pos)
+    {
+        return FindClosestNode(allNodes.ToArray(), pos);
+    }
+
     public void ResetNodes()
     {
         foreach (Node node in allNodes)

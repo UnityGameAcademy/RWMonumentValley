@@ -92,7 +92,6 @@ public class DragSpinner : MonoBehaviour
     // end spin on mouse release; then round to right angle
     private void OnMouseUp()
     {
-        // round result to nearest 90 degree angle
         isSpinning = false;
         RoundToRightAngles(targetToSpin);
 

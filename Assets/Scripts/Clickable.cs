@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 // allows player to click on a block to set path goal
 [RequireComponent(typeof(Collider))]
@@ -8,40 +9,41 @@ public class Clickable : MonoBehaviour
 {
 
     private Node[] childNodes;
-
-    private Pathfinder pathfinder;
     private Graph graph;
 
     private bool isClicked;
-    public bool IsClicked => isClicked;
+    public bool IsClicked { get { return isClicked; } set { isClicked = value; } }
+
+    // invoked when collider is clicked
+    public Action<Node> clickAction;
 
     private void Start()
     {
         childNodes = GetComponentsInChildren<Node>();
-        pathfinder = FindObjectOfType<Pathfinder>();
-        if (pathfinder)
-        {
-            graph = pathfinder.GetComponent<Graph>();
-        }
+        graph = FindObjectOfType<Graph>();
     }
 
     private void OnMouseDown()
     {
-        if (graph == null || Camera.main == null || pathfinder == null)
+        // validate components
+        if (graph == null || Camera.main == null)
         {
             return;
         }
 
-        // raycast and find the closest node to hit point
+        // raycast and find the path to the closest node
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100))
         {
-            Node closestNode = graph.FindClosestNode(childNodes, hit.point);
-
             isClicked = true;
-            pathfinder.FindPath(closestNode);
+            Node clickedNode = graph.FindClosestNode(childNodes, hit.point);
+
+            // trigger some clickable event
+            if (clickAction != null)
+            {
+                clickAction.Invoke(clickedNode);
+            }
         }
     }
 }
