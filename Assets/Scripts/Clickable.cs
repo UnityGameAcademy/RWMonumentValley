@@ -37,7 +37,7 @@ public class Clickable : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, 100))
         {
             isClicked = true;
-            Node clickedNode = graph.FindClosestNode(childNodes, hit.point);
+            Node clickedNode = graph.FindClosestNode(childNodes, hit.point, true);
 
             // trigger some clickable event
             if (clickAction != null)

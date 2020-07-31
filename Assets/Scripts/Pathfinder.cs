@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// generates a path through a Graph
 [RequireComponent(typeof(Graph))]
 public class Pathfinder : MonoBehaviour
 {
-    // start and end Nodes
-    [SerializeField] private Node startNode;
-    [SerializeField] private Node goalNode;
+    // inspector
+    [SerializeField] private Color pathColor = Color.green;
+
+    // path start Node (usually current Node of the Player)
+    private Node startNode;
+
+    // path end Node
+    private Node destinationNode;
 
     // next Nodes to explore
     private List<Node> frontierNodes;
@@ -27,12 +33,10 @@ public class Pathfinder : MonoBehaviour
     // structure containing all Nodes
     private Graph graph;
 
+    // properties
     public Node StartNode { get { return startNode; } set { startNode = value; } }
-    public Node GoalNode { get { return goalNode; } set { goalNode = value; } }
+    public Node DestinationNode { get { return destinationNode; } set { destinationNode = value; } }
     public List<Node> PathNodes => pathNodes;
-
-
-    [SerializeField] private Color pathColor = Color.green;
 
     private void Awake()
     {
@@ -42,7 +46,7 @@ public class Pathfinder : MonoBehaviour
     // initialize all Nodes/lists
     private void InitGraph()
     {
-        if (graph == null || startNode == null || goalNode == null)
+        if (graph == null || startNode == null || destinationNode == null)
         {
             return;
         }
@@ -100,14 +104,14 @@ public class Pathfinder : MonoBehaviour
         List<Node> path = new List<Node>();
 
         // start with the goal Node
-        if (goalNode == null)
+        if (destinationNode == null)
         {
             return path;
         }
-        path.Add(goalNode);
+        path.Add(destinationNode);
 
         // follow the breadcrumb trail, creating a path until it ends
-        Node currentNode = goalNode.PreviousNode;
+        Node currentNode = destinationNode.PreviousNode;
 
         while (currentNode != null)
         {
@@ -120,17 +124,17 @@ public class Pathfinder : MonoBehaviour
     public void FindPath()
     {
 
-        if (startNode == null || goalNode == null)
+        if (startNode == null || destinationNode == null)
         {
             Debug.Log("Missing Start or Goal node =============");
             return;
         }
 
         // special case if goalNode is the same as the startNode
-        if (startNode == goalNode)
+        if (startNode == destinationNode)
         {
             List<Node> pathOfOne = new List<Node>();
-            pathOfOne.Add(goalNode);
+            pathOfOne.Add(destinationNode);
             pathNodes = pathOfOne;
             isComplete = true;
             Debug.Log("FIND PATH COMPLETE WITH ONE-NODE....");
@@ -166,7 +170,7 @@ public class Pathfinder : MonoBehaviour
                 ExpandFrontier(currentNode);
 
                 // if we have found the goal
-                if (frontierNodes.Contains(goalNode))
+                if (frontierNodes.Contains(destinationNode))
                 {
                     // generate the Path to the goal
                     pathNodes = GetPathNodes();
@@ -188,7 +192,7 @@ public class Pathfinder : MonoBehaviour
 
     public void FindPath(Node goal)
     {
-        goalNode = goal;
+        destinationNode = goal;
         FindPath();
     }
 
@@ -199,7 +203,7 @@ public class Pathfinder : MonoBehaviour
             foreach (Node node in pathNodes)
             {
                 
-                if (node == goalNode || node == startNode)
+                if (node == destinationNode || node == startNode)
                 {
                     Gizmos.color = Color.red;
                     Gizmos.DrawWireCube(node.transform.position, new Vector3(0.25f, 0.25f, 0.25f));
@@ -221,6 +225,6 @@ public class Pathfinder : MonoBehaviour
 
     public void SetStartNode(Vector3 position)
     {
-        StartNode = graph.FindClosestNode(position);
+        StartNode = graph.FindClosestNode(position, true);
     }
 }

@@ -7,14 +7,20 @@ public class PlayerController : MonoBehaviour
 {
     // visualization indicating where clicked
     [SerializeField] GameObject cursor;
-    [SerializeField] float moveSpeed;
+
+    // time to move one unit
+    [Range(0.25f, 5f)]
+    [SerializeField] float moveTime = 0.25f;
+    
 
     // pathfinding fields
     private Clickable[] clickables;
     private Pathfinder pathfinder;
     private Graph graph;
-    private List<Node> currentPath;
+
     private Node currentNode;
+    private Node nextNode;
+    private bool hasReachedDestination;
 
     // movement fields
     private bool isMoving;
@@ -40,6 +46,7 @@ public class PlayerController : MonoBehaviour
     {
         pathfinder?.SetStartNode(transform.position);
 
+
     }
 
     private void OnDisable()
@@ -53,11 +60,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnClick(Node clickedNode)
     {
-        //Debug.Log("PLAYERCONTROLLER OnClick: click at" + clickedNode.transform.position.ToString());
-
-        pathfinder.FindPath(clickedNode);
-        FollowPath();
-
+        if (!isMoving)
+        {
+            pathfinder.FindPath(clickedNode);
+            FollowPath();
+        }
     }
 
     public void FollowPath()
@@ -67,33 +74,65 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator FollowPathRoutine()
     {
+        isMoving = true;
+        int i = 0;
+        hasReachedDestination = false;
 
-        yield return null;
+        while (i < pathfinder.PathNodes.Count - 1)
+        {
+            currentNode = pathfinder.PathNodes[i];
+            nextNode = pathfinder.PathNodes[i + 1];
+
+            yield return StartCoroutine(MoveToPositionRoutine(currentNode.transform.position, nextNode.transform.position));
+            i++;
+        }
+        hasReachedDestination = true;
+        isMoving = false;
     }
 
-    private IEnumerator MoveToPositionRoutine(Vector3 targetPosition)
+    private IEnumerator MoveToPositionRoutine(Vector3 startPosition, Vector3 targetPosition)
     {
-        yield return null;
+        float t = 0;
+        moveTime = Mathf.Clamp(moveTime, 0.1f, 5f);
+
+        while (t < 1)
+        {
+            t += Time.deltaTime / moveTime ;
+            transform.position = Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp(t,0,1));
+
+            // if over halfway, change parent to next node
+            if (t > 0.51f)
+            {
+                transform.parent = nextNode.transform;
+            }
+
+            // wait one frame
+            yield return null;
+        }
+
+        UpdatePlayerNode();
+
     }
 
-    public void MoveToNode(Node node)
+    public void SnapToNearestNode()
     {
-        
+        Node nearestNode = graph?.FindClosestNode(transform.position, true);
     }
 
-    public void MoveToNearestNode()
-    {
-        Node nearestNode = graph.FindClosestNode(transform.position);
-        MoveToNode(nearestNode);
-    }
 
     public bool HasReachedGoal()
     {
-        if (pathfinder == null || graph == null || pathfinder.GoalNode == null)
+        if (pathfinder == null || graph == null || pathfinder.DestinationNode == null)
             return false;
 
-        float distanceSqr = (pathfinder.GoalNode.transform.position - transform.position).sqrMagnitude;
+        float distanceSqr = (pathfinder.DestinationNode.transform.position - transform.position).sqrMagnitude;
 
         return (distanceSqr < 0.01f);
+    }
+
+    private void UpdatePlayerNode()
+    {
+        pathfinder?.SetStartNode(transform.position);
+        currentNode = pathfinder.StartNode;
     }
 }

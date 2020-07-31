@@ -9,6 +9,12 @@ public class Graph : MonoBehaviour
     // all of the Nodes in the current level/maze
     private List<Node> allNodes = new List<Node>();
 
+    // end of level
+    [SerializeField] private Node goalNode;
+
+    // properties
+    public Node GoalNode => goalNode;
+
     // 
     private void Awake()
     {
@@ -31,7 +37,7 @@ public class Graph : MonoBehaviour
     }
 
     // locate the closest Node at a target position 
-    public Node FindClosestNode(Node[] nodes, Vector3 pos)
+    public Node FindClosestNode(Node[] nodes, Vector3 pos, bool screenMode)
     {
         Node closestNode = null;
         float closestDistanceSqr = Mathf.Infinity;
@@ -39,6 +45,12 @@ public class Graph : MonoBehaviour
         foreach (Node n in nodes)
         {
             Vector3 diff = n.transform.position - pos;
+            if (screenMode)
+            {
+                Vector3 nodeScreenPosition = Camera.main.WorldToScreenPoint(n.transform.position);
+                Vector3 screenPosition = Camera.main.WorldToScreenPoint(pos);
+                diff = nodeScreenPosition - screenPosition;
+            }
 
             if (diff.sqrMagnitude < closestDistanceSqr)
             {
@@ -49,9 +61,11 @@ public class Graph : MonoBehaviour
         return closestNode;
     }
 
-    public Node FindClosestNode(Vector3 pos)
+
+
+    public Node FindClosestNode(Vector3 pos, bool screenMode = false)
     {
-        return FindClosestNode(allNodes.ToArray(), pos);
+        return FindClosestNode(allNodes.ToArray(), pos, screenMode);
     }
 
     public void ResetNodes()
