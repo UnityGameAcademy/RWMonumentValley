@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
     {
         screenFader?.FadeOff(1.5f);
         winText?.FadeOff(0.1f);
-
     }
 
     private void Update()

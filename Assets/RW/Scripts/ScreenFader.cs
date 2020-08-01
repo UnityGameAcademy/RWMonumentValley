@@ -24,5 +24,4 @@ public class ScreenFader : MonoBehaviour
         image?.CrossFadeAlpha(1f, fadeOnTime, true);
     }
 
-
 }
