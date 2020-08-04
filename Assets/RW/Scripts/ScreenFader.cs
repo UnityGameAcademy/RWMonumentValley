@@ -28,8 +28,6 @@ public class ScreenFader : MonoBehaviour
         {
             yield return null;
         }
-
-        //yield return new WaitForSeconds(disableTime + 0.01f);
         graphic.gameObject.SetActive(false);
         
     }

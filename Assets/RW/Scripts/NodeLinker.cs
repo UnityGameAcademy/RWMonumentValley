@@ -12,7 +12,6 @@ public class NodeLinker : MonoBehaviour
     private void Start()
     {
         UpdateLinks();
-
     }
 
     // enable/disable based on transform's euler angles

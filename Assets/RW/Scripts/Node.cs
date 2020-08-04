@@ -17,6 +17,7 @@ public class Node : MonoBehaviour
     // Nodes specifically excluded from Edges
     [SerializeField] private List<Node> excludedNodes;
 
+    [Space(20)] [Tooltip("Invoked when Player enters this Node")]
     // invoked when Player enters this node
     public UnityEvent playerEvent;
 

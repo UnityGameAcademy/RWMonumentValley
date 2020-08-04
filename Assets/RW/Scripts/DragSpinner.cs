@@ -117,7 +117,7 @@ public class DragSpinner : MonoBehaviour
         xform.eulerAngles = new Vector3(roundedXAngle, roundedYAngle, roundedZAngle);
     }
 
-    private void EnableSpinner(bool state)
+    public void EnableSpinner(bool state)
     {
         isActive = state;
     }

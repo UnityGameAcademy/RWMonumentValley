@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator RestartRoutine(float delay)
     {
         yield return new WaitForSeconds(delay);
+
         Scene activeScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(activeScene.buildIndex);
     }

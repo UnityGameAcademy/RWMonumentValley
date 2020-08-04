@@ -124,10 +124,8 @@ public class Pathfinder : MonoBehaviour
 
     public void FindPath()
     {
-
         if (startNode == null || destinationNode == null)
         {
-            //Debug.Log("Missing Start or Goal node =============");
             return;
         }
 
@@ -141,7 +139,7 @@ public class Pathfinder : MonoBehaviour
             return;
         }
 
-        // safety prevents infinite loop
+        // prevents infinite loop
         const int maxIterations = 100;
         int iterations = 0;
 
@@ -176,18 +174,14 @@ public class Pathfinder : MonoBehaviour
                     pathNodes = GetPathNodes();
                     isComplete = true;
                     hasFoundGoal = true;
-                    //Debug.Log("FIND PATH COMPLETE WITH GOAL....");
                 }
             }
             // if whole graph explored but no path found
             else
             {
                 isComplete = true;
-                //Debug.Log("FIND PATH COMPLETE NO GOAL FOUND....");
             }
         }
-
-        //float timeElapsed = Time.realtimeSinceStartup - timeStarted;
     }
 
     public void FindPath(Node goal)
@@ -206,12 +200,12 @@ public class Pathfinder : MonoBehaviour
                 if (node == destinationNode || node == startNode)
                 {
                     Gizmos.color = Color.red;
-                    Gizmos.DrawWireCube(node.transform.position, new Vector3(0.25f, 0.25f, 0.25f));
+                    Gizmos.DrawCube(node.transform.position, new Vector3(0.25f, 0.25f, 0.25f));
                 }
                 else
                 {
                     Gizmos.color = pathColor;
-                    Gizmos.DrawWireSphere(node.transform.position, 0.15f);
+                    Gizmos.DrawSphere(node.transform.position, 0.15f);
                 }
 
                 Gizmos.color = Color.red;

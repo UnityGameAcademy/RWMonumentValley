@@ -9,19 +9,20 @@ public class Highlighter : MonoBehaviour
     [SerializeField] private MeshRenderer[] meshRenderers;
 
     // Property Reference from Shader Graph
-    [SerializeField] private string highlightProperty = "_Enabled";
+    [SerializeField] private string highlightProperty = "_IsHighlighted";
 
     private bool isEnabled;
     public bool IsEnabled { get { return isEnabled; } set { isEnabled = value; } }
 
-    void Start()
+
+    private void Start()
     {
-        Activate(true);
+        isEnabled = true;
         // use non-highlighted material by default
         EnableHighlight(false);
     }
 
-    // toggle glow off using Shader Graph property
+    // toggle glow on or off using Shader Graph property
     public void EnableHighlight(bool onOff)
     {
         foreach (MeshRenderer meshRenderer in meshRenderers)
@@ -29,19 +30,21 @@ public class Highlighter : MonoBehaviour
             meshRenderer.material.SetFloat(highlightProperty, onOff ? 1f : 0f);
         }
     }
-
+    
     private void OnMouseOver()
     {
         if (isEnabled)
             EnableHighlight(true);
+        else
+            EnableHighlight(false);
     }
 
     private void OnMouseExit()
     {
-        if (isEnabled)
             EnableHighlight(false);
     }
 
+    // master toggle (off overrides highlight state)
     public void Activate(bool state)
     {
         isEnabled = state;

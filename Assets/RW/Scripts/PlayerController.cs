@@ -9,8 +9,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject cursor;
 
     // time to move one unit
-    [Range(0.25f, 5f)]
+    [Range(0.25f, 2f)]
     [SerializeField] float moveTime = 0.25f;
+    [Range(0.5f, 3f)]
+    [SerializeField] float walkAnimSpeed = 1f;
 
     // Animator Controller
     [SerializeField] Animator animController;
@@ -19,7 +21,6 @@ public class PlayerController : MonoBehaviour
     private Clickable[] clickables;
     private Pathfinder pathfinder;
     private Graph graph;
-
     private Node currentNode;
     private Node nextNode;
     private bool hasReachedDestination;
@@ -51,6 +52,9 @@ public class PlayerController : MonoBehaviour
     {
         pathfinder?.SetStartNode(transform.position);
         isMoving = false;
+
+        // set AnimationClip speed
+        animController?.SetFloat("walkSpeedMultiplier", walkAnimSpeed);
     }
 
     private void OnDisable()
@@ -90,8 +94,7 @@ public class PlayerController : MonoBehaviour
             FaceNextNode(currentNode.transform.position, nextNode.transform.position);
             ToggleAnimation(isMoving);
 
-            // invoke UnityEvent associate with Node
-            currentNode?.playerEvent?.Invoke();
+
 
             yield return StartCoroutine(MoveToPositionRoutine(currentNode.transform.position, nextNode.transform.position));
             i++;
@@ -115,6 +118,9 @@ public class PlayerController : MonoBehaviour
             if (t > 0.51f)
             {
                 transform.parent = nextNode.transform;
+
+                // invoke UnityEvent associated with next Node
+                nextNode?.playerEvent?.Invoke();
             }
 
             // wait one frame
@@ -148,6 +154,7 @@ public class PlayerController : MonoBehaviour
     {
         pathfinder?.SetStartNode(transform.position);
         currentNode = pathfinder.StartNode;
+        nextNode = null;
     }
     // disable controls
     public void EndGame()
