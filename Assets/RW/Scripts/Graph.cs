@@ -11,8 +11,6 @@ public class Graph : MonoBehaviour
 
     // end of level
     [SerializeField] private Node goalNode;
-
-    // properties
     public Node GoalNode => goalNode;
 
     // 
@@ -36,7 +34,7 @@ public class Graph : MonoBehaviour
         return null;
     }
 
-    // locate the closest Node at a target position 
+    // locate the closest Node in a given array (screen Mode true = screen space, false = world space)
     public Node FindClosestNode(Node[] nodes, Vector3 pos, bool screenMode)
     {
         Node closestNode = null;
@@ -45,6 +43,7 @@ public class Graph : MonoBehaviour
         foreach (Node n in nodes)
         {
             Vector3 diff = n.transform.position - pos;
+
             if (screenMode)
             {
                 Vector3 nodeScreenPosition = Camera.main.WorldToScreenPoint(n.transform.position);
@@ -61,13 +60,13 @@ public class Graph : MonoBehaviour
         return closestNode;
     }
 
-
-
+    // find the closest Node in the entire Graph
     public Node FindClosestNode(Vector3 pos, bool screenMode = false)
     {
         return FindClosestNode(allNodes.ToArray(), pos, screenMode);
     }
 
+    // clear breadcrumb trail
     public void ResetNodes()
     {
         foreach (Node node in allNodes)

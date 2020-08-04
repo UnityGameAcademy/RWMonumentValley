@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 
 // allows a target Transform to be rotated based on mouse click and drag
 [RequireComponent(typeof(Collider))]
@@ -27,7 +24,6 @@ public class DragSpinner : MonoBehaviour
     [SerializeField] private int minDragDist = 10;
 
     [SerializeField] private NodeLinker nodeLinker;
-
 
     // vector from pivot to mouse pointer
     private Vector2 directionToMouse;
@@ -61,12 +57,12 @@ public class DragSpinner : MonoBehaviour
                 axisDirection = Vector3.forward;
                 break;
         }
-        Enable(true);
+        EnableSpinner(true);
     }
 
     private void OnMouseDrag()
     {
-        // if collider has been clicked...
+        // if clicked...
         if (isSpinning && Camera.main != null && pivot != null && isActive)
         {
             // get the angle to the current mouse position
@@ -74,7 +70,7 @@ public class DragSpinner : MonoBehaviour
             angleToMouse = Mathf.Atan2(directionToMouse.y, directionToMouse.x) * Mathf.Rad2Deg;
 
             // if we have dragged a minimum threshold, rotate the target to follow the mouse movements around the pivot
-            // (Unity uses left-handed coordinate system so positive rotations are clockwise)
+            // (left-handed coordinate system; positive rotations are clockwise)
             if (directionToMouse.magnitude > minDragDist)
             {
                 Vector3 newRotationVector = (previousAngleToMouse - angleToMouse) * axisDirection;
@@ -102,8 +98,11 @@ public class DragSpinner : MonoBehaviour
             return;
 
         isSpinning = false;
+
+        // snap to nearest 90-degree interval
         RoundToRightAngles(targetToSpin);
 
+        // don't like referencing this directly but not using separate game Events to save on word count
         nodeLinker?.UpdateLinks();
 
     }
@@ -118,7 +117,7 @@ public class DragSpinner : MonoBehaviour
         xform.eulerAngles = new Vector3(roundedXAngle, roundedYAngle, roundedZAngle);
     }
 
-    private void Enable(bool state)
+    private void EnableSpinner(bool state)
     {
         isActive = state;
     }

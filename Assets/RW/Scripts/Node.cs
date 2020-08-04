@@ -1,43 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Node : MonoBehaviour
 {
-    #region INSPECTOR
+    // gizmo colors
     [SerializeField] private float gizmoRadius = 0.1f;
     [SerializeField] private Color defaultGizmoColor = Color.black;
     [SerializeField] private Color selectedGizmoColor = Color.blue;
     [SerializeField] private Color inactiveGizmoColor = Color.gray;
 
-    // connected neighboring nodes
+    // neighboring nodes + active state
     [SerializeField] private List<Edge> edges = new List<Edge>();
 
+    // Nodes specifically excluded from Edges
     [SerializeField] private List<Node> excludedNodes;
-    #endregion
 
-    #region PRIVATE
+    // invoked when Player enters this node
+    public UnityEvent playerEvent;
 
     private Graph graph;
     private Node previousNode;
-    #endregion
 
-    #region STATIC
-    // 3d compass directions to check for adjacent/neighboring Nodes
+    // 3d compass directions to check for horizontal neighbors automatically
     public static Vector3[] neighborDirections =
     {
-        // horizontal neighbors
         new Vector3(1f, 0f, 0f),
         new Vector3(-1f, 0f, 0f),
         new Vector3(0f, 0f, 1f),
         new Vector3(0f, 0f, -1f),
     };
-    #endregion
 
-    #region PROPERTIES
     public Node PreviousNode { get { return previousNode; } set { previousNode = value; } }
     public List<Edge> Edges => edges;
-    #endregion
+
 
     private void Awake()
     {

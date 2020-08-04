@@ -11,10 +11,14 @@ public class Highlighter : MonoBehaviour
     // Property Reference from Shader Graph
     [SerializeField] private string highlightProperty = "_Enabled";
 
+    private bool isEnabled;
+    public bool IsEnabled { get { return isEnabled; } set { isEnabled = value; } }
+
     void Start()
     {
+        Activate(true);
         // use non-highlighted material by default
-        EnableHighlight(false); 
+        EnableHighlight(false);
     }
 
     // toggle glow off using Shader Graph property
@@ -28,12 +32,19 @@ public class Highlighter : MonoBehaviour
 
     private void OnMouseOver()
     {
-        EnableHighlight(true);
+        if (isEnabled)
+            EnableHighlight(true);
     }
 
     private void OnMouseExit()
     {
-        EnableHighlight(false);
+        if (isEnabled)
+            EnableHighlight(false);
+    }
+
+    public void Activate(bool state)
+    {
+        isEnabled = state;
     }
 
 }

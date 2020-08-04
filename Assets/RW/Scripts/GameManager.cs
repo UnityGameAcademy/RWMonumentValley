@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class GameManager : MonoBehaviour
 {
     private PlayerController playerController;
+
     private bool isGameOver;
     public bool IsGameOver => isGameOver;
 
@@ -15,8 +16,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] ScreenFader screenFader;
     [SerializeField] ScreenFader winText;
 
+    // invoked when starting the level
     public UnityEvent initEvent;
+
+    // invoked before restarting the level
     public UnityEvent restartEvent;
+
+    public float delayTime = 2f;
 
     private void Awake()
     {
@@ -26,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        screenFader?.FadeOff(1.5f);
+        screenFader?.FadeOff(delayTime);
         initEvent.Invoke();
     }
 
@@ -46,6 +52,8 @@ public class GameManager : MonoBehaviour
             return;
         }
         isGameOver = true;
+
+        // disable player controls
         playerController?.EndGame();
 
         // play win animation
@@ -66,7 +74,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(RestartRoutine(delay));
     }
 
-    private IEnumerator RestartRoutine(float delay = 1f)
+    private IEnumerator RestartRoutine(float delay)
     {
         yield return new WaitForSeconds(delay);
         Scene activeScene = SceneManager.GetActiveScene();

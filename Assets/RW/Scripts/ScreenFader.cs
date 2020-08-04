@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// utiltiy for fading UI Image or Text on/off
 [RequireComponent(typeof(MaskableGraphic))]
 public class ScreenFader : MonoBehaviour
 {

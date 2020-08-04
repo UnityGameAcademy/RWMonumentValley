@@ -7,12 +7,11 @@ using System;
 [RequireComponent(typeof(Collider))]
 public class Clickable : MonoBehaviour
 {
-
+    // Nodes under this Transform
     private Node[] childNodes;
-    private Graph graph;
 
-    private bool isClicked;
-    public bool IsClicked { get { return isClicked; } set { isClicked = value; } }
+    // reference to Graph
+    private Graph graph;
 
     // invoked when collider is clicked
     public Action<Node> clickAction;
@@ -36,12 +35,10 @@ public class Clickable : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100))
         {
-            isClicked = true;
+            // find the closest Node in Screen space
             Node clickedNode = graph.FindClosestNode(childNodes, hit.point, true);
 
-            //Debug.Log("Clicked node = " + clickedNode.name);
-
-            // trigger some clickable event
+            // trigger event clickable event
             if (clickAction != null)
             {
                 clickAction.Invoke(clickedNode);

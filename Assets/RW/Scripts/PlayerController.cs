@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private Node nextNode;
     private bool hasReachedDestination;
 
-    // movement fields
+    // flags
     private bool isMoving;
     private bool isGameOver;
 
@@ -88,14 +88,17 @@ public class PlayerController : MonoBehaviour
             nextNode = pathfinder.PathNodes[i + 1];
 
             FaceNextNode(currentNode.transform.position, nextNode.transform.position);
-            UpdateAnimation(isMoving);
+            ToggleAnimation(isMoving);
+
+            // invoke UnityEvent associate with Node
+            currentNode?.playerEvent?.Invoke();
 
             yield return StartCoroutine(MoveToPositionRoutine(currentNode.transform.position, nextNode.transform.position));
             i++;
         }
         hasReachedDestination = true;
         isMoving = false;
-        UpdateAnimation(isMoving);
+        ToggleAnimation(isMoving);
     }
 
     private IEnumerator MoveToPositionRoutine(Vector3 startPosition, Vector3 targetPosition)
@@ -146,7 +149,7 @@ public class PlayerController : MonoBehaviour
         pathfinder?.SetStartNode(transform.position);
         currentNode = pathfinder.StartNode;
     }
-
+    // disable controls
     public void EndGame()
     {
         isGameOver = true;
@@ -180,15 +183,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UpdateAnimation(bool state)
+    // toggle between idle and walking animation
+    private void ToggleAnimation(bool state)
     {
-        if (animController == null)
-        {
-            return;
-        }
-
         animController?.SetBool("isMoving", state);
-
     }
 
 }
