@@ -196,7 +196,7 @@ public class Pathfinder : MonoBehaviour
         FindPath();
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         if (isComplete)
         {

@@ -35,6 +35,8 @@ public class DragSpinner : MonoBehaviour
     // are we currently spinning?
     private bool isSpinning;
 
+    private bool isActive;
+
     // angle (degrees) from clicked screen position 
     private float angleToMouse;
 
@@ -59,12 +61,13 @@ public class DragSpinner : MonoBehaviour
                 axisDirection = Vector3.forward;
                 break;
         }
+        Enable(true);
     }
 
     private void OnMouseDrag()
     {
         // if collider has been clicked...
-        if (isSpinning && Camera.main != null && pivot != null)
+        if (isSpinning && Camera.main != null && pivot != null && isActive)
         {
             // get the angle to the current mouse position
             directionToMouse = Input.mousePosition - Camera.main.WorldToScreenPoint(pivot.position);
@@ -84,6 +87,9 @@ public class DragSpinner : MonoBehaviour
     // begin spin 
     private void OnMouseDown()
     {
+        if (!isActive)
+            return;
+
         isSpinning = true;
         directionToMouse = Input.mousePosition - Camera.main.WorldToScreenPoint(pivot.position);
         previousAngleToMouse = Mathf.Atan2(directionToMouse.y, directionToMouse.x) * Mathf.Rad2Deg;
@@ -92,6 +98,9 @@ public class DragSpinner : MonoBehaviour
     // end spin on mouse release; then round to right angle
     private void OnMouseUp()
     {
+        if (!isActive)
+            return;
+
         isSpinning = false;
         RoundToRightAngles(targetToSpin);
 
@@ -107,5 +116,10 @@ public class DragSpinner : MonoBehaviour
         float roundedZAngle = Mathf.Round(xform.eulerAngles.z / 90f) * 90f;
 
         xform.eulerAngles = new Vector3(roundedXAngle, roundedYAngle, roundedZAngle);
+    }
+
+    private void Enable(bool state)
+    {
+        isActive = state;
     }
 }
