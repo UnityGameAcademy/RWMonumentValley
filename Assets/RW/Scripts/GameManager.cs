@@ -26,22 +26,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-
         screenFader?.FadeOff(1.5f);
-        //winText?.FadeOff(0.1f);
         initEvent.Invoke();
-        Debug.Log("Invoking INIT EVENT");
     }
 
     private void Update()
     {
-        if (playerController == null)
-        {
-            Debug.LogWarning("GAMEMANAGER Warning: missing PlayerController!");
-            return;
-        }
-
-        if (playerController.HasReachedGoal())
+        if (playerController != null && playerController.HasReachedGoal())
         {
             Win();
         }
@@ -63,21 +54,10 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WinRoutine()
     {
-        // play Animation
-        //winText?.FadeOn(2f);
-
         restartEvent?.Invoke();
 
         // yield Animation time
         yield return new WaitForSeconds(2f);
-        // fade out
-
-       // screenFader?.FadeOn(1f);
-
-        // show restart button
-
-        yield return new WaitForSeconds(1f);
-
 
     }
 

@@ -26,19 +26,10 @@ public class NodeLinker : MonoBehaviour
 
             if (Mathf.Abs(angleDiff) < 0.01f)
             {
-
-                //Debug.Log("active Euler angle = " + l.activeEulerAngle);
-                //Debug.Log("current Euler angle = " + l.xform.eulerAngles);
-                //Debug.Log("diff =  " + angleDiff);
                 EnableLink(l.nodeA, l.nodeB, true);
-                //l.nodeA.EnableEdge(l.nodeB, true);
-                //l.nodeB.EnableEdge(l.nodeA, true);
-                //Debug.Log("Connected " + l.nodeA + " with " + l.nodeB);
             }
             else
             {
-                //l.nodeA.EnableEdge(l.nodeB, false);
-                //l.nodeB.EnableEdge(l.nodeA, false);
                 EnableLink(l.nodeA, l.nodeB, false);
             }
         }
@@ -48,12 +39,11 @@ public class NodeLinker : MonoBehaviour
     {
         if (nodeA == null || nodeB == null)
             return;
+
         nodeA.EnableEdge(nodeB, state);
         nodeB.EnableEdge(nodeA, state);
     }
 }
-
-
 
 // class to activate/deactivate special edges between Nodes
 [System.Serializable]
@@ -67,7 +57,5 @@ public class Link
 
     // euler angle needed to activate link
     public Vector3 activeEulerAngle;
-
-    public UnityEvent linkEvent;
 
 }

@@ -11,7 +11,9 @@ public class PlayerController : MonoBehaviour
     // time to move one unit
     [Range(0.25f, 5f)]
     [SerializeField] float moveTime = 0.25f;
-    
+
+    // Animator Controller
+    [SerializeField] Animator animController;
 
     // pathfinding fields
     private Clickable[] clickables;
@@ -21,12 +23,10 @@ public class PlayerController : MonoBehaviour
     private Node currentNode;
     private Node nextNode;
     private bool hasReachedDestination;
-    
-
 
     // movement fields
     private bool isMoving;
-    private bool canMove;
+    private bool isGameOver;
 
     private void Awake()
     {
@@ -43,12 +43,14 @@ public class PlayerController : MonoBehaviour
         {
             graph = pathfinder.GetComponent<Graph>();
         }
-        canMove = true;
+
+        isGameOver = false;
     }
 
     private void Start()
     {
         pathfinder?.SetStartNode(transform.position);
+        isMoving = false;
     }
 
     private void OnDisable()
@@ -62,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnClick(Node clickedNode)
     {
-        if (!isMoving && canMove)
+        if (!isMoving && !isGameOver)
         {
             pathfinder.FindPath(clickedNode);
             FollowPath();
@@ -85,11 +87,15 @@ public class PlayerController : MonoBehaviour
             currentNode = pathfinder.PathNodes[i];
             nextNode = pathfinder.PathNodes[i + 1];
 
+            FaceNextNode(currentNode.transform.position, nextNode.transform.position);
+            UpdateAnimation(isMoving);
+
             yield return StartCoroutine(MoveToPositionRoutine(currentNode.transform.position, nextNode.transform.position));
             i++;
         }
         hasReachedDestination = true;
         isMoving = false;
+        UpdateAnimation(isMoving);
     }
 
     private IEnumerator MoveToPositionRoutine(Vector3 startPosition, Vector3 targetPosition)
@@ -143,6 +149,46 @@ public class PlayerController : MonoBehaviour
 
     public void EndGame()
     {
-        canMove = false;
+        isGameOver = true;
     }
+
+    // turn face the next Node, always projected on a plane at the Player's feet
+    public void FaceNextNode(Vector3 startPosition, Vector3 nextPosition)
+    {
+        if (Camera.main == null)
+        {
+            return;
+        }
+
+        // convert next Node world space to screen space
+        Vector3 nextPositionScreen = Camera.main.WorldToScreenPoint(nextPosition);
+
+        // convert next Node screen point to Ray
+        Ray rayToNextPosition = Camera.main.ScreenPointToRay(nextPositionScreen);
+
+        // plane at player's feet
+        Plane plane = new Plane(Vector3.up, startPosition);
+
+        // distance from camera
+        float cameraDistance = 0f;
+
+        if (plane.Raycast(rayToNextPosition, out cameraDistance))
+        {
+            Vector3 nextPositionOnPlane = rayToNextPosition.GetPoint(cameraDistance);
+            Vector3 diffVector = nextPositionOnPlane - startPosition;
+            transform.rotation = Quaternion.LookRotation(diffVector);
+        }
+    }
+
+    private void UpdateAnimation(bool state)
+    {
+        if (animController == null)
+        {
+            return;
+        }
+
+        animController?.SetBool("isMoving", state);
+
+    }
+
 }

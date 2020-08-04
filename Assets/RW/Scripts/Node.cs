@@ -12,8 +12,8 @@ public class Node : MonoBehaviour
 
     // connected neighboring nodes
     [SerializeField] private List<Edge> edges = new List<Edge>();
-    [SerializeField] private List<Node> excludedNodes;
 
+    [SerializeField] private List<Node> excludedNodes;
     #endregion
 
     #region PRIVATE
@@ -25,15 +25,12 @@ public class Node : MonoBehaviour
     #region STATIC
     // 3d compass directions to check for adjacent/neighboring Nodes
     public static Vector3[] neighborDirections =
-{
+    {
         // horizontal neighbors
         new Vector3(1f, 0f, 0f),
         new Vector3(-1f, 0f, 0f),
         new Vector3(0f, 0f, 1f),
         new Vector3(0f, 0f, -1f),
-
-
-
     };
     #endregion
 
@@ -73,7 +70,7 @@ public class Node : MonoBehaviour
         {
             if (e.neighbor != null)
             {
-                Gizmos.color = (e.isActive) ? selectedGizmoColor:inactiveGizmoColor ;
+                Gizmos.color = (e.isActive) ? selectedGizmoColor : inactiveGizmoColor;
                 Gizmos.DrawLine(transform.position, e.neighbor.transform.position);
             }
         }
@@ -96,7 +93,7 @@ public class Node : MonoBehaviour
             // add to edges list if not already included and not excluded specifically
             if (newNode != null && !HasNeighbor(newNode) && !excludedNodes.Contains(newNode))
             {
-                Edge newEdge = new Edge { neighbor = newNode, isActive = true};
+                Edge newEdge = new Edge { neighbor = newNode, isActive = true };
                 edges.Add(newEdge);
             }
         }
