@@ -21,9 +21,12 @@ public class PlayerController : MonoBehaviour
     private Node currentNode;
     private Node nextNode;
     private bool hasReachedDestination;
+    
+
 
     // movement fields
     private bool isMoving;
+    private bool canMove;
 
     private void Awake()
     {
@@ -40,6 +43,7 @@ public class PlayerController : MonoBehaviour
         {
             graph = pathfinder.GetComponent<Graph>();
         }
+        canMove = true;
     }
 
     private void Start()
@@ -58,7 +62,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnClick(Node clickedNode)
     {
-        if (!isMoving)
+        if (!isMoving && canMove)
         {
             pathfinder.FindPath(clickedNode);
             FollowPath();
@@ -121,7 +125,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public bool HasReachedGoal()
     {
         if (pathfinder == null || graph == null || graph.GoalNode == null)
@@ -136,5 +139,10 @@ public class PlayerController : MonoBehaviour
     {
         pathfinder?.SetStartNode(transform.position);
         currentNode = pathfinder.StartNode;
+    }
+
+    public void EndGame()
+    {
+        canMove = false;
     }
 }

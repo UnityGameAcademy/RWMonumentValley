@@ -20,7 +20,7 @@ public class NodeLinker : MonoBehaviour
     {
         foreach (Link l in links)
         {
-
+            // check difference between desired and current angle
             Quaternion targetAngle = Quaternion.Euler(l.activeEulerAngle);
             float angleDiff = Quaternion.Angle(l.xform.rotation, targetAngle);
 
@@ -30,15 +30,16 @@ public class NodeLinker : MonoBehaviour
                 //Debug.Log("active Euler angle = " + l.activeEulerAngle);
                 //Debug.Log("current Euler angle = " + l.xform.eulerAngles);
                 //Debug.Log("diff =  " + angleDiff);
-
-                l.nodeA.EnableEdge(l.nodeB, true);
-                l.nodeB.EnableEdge(l.nodeA, true);
-                Debug.Log("Connected " + l.nodeA + " with " + l.nodeB);
+                EnableLink(l.nodeA, l.nodeB, true);
+                //l.nodeA.EnableEdge(l.nodeB, true);
+                //l.nodeB.EnableEdge(l.nodeA, true);
+                //Debug.Log("Connected " + l.nodeA + " with " + l.nodeB);
             }
             else
             {
-                l.nodeA.EnableEdge(l.nodeB, false);
-                l.nodeB.EnableEdge(l.nodeA, false);
+                //l.nodeA.EnableEdge(l.nodeB, false);
+                //l.nodeB.EnableEdge(l.nodeA, false);
+                EnableLink(l.nodeA, l.nodeB, false);
             }
         }
     }

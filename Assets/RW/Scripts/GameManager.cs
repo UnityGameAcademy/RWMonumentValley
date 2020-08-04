@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         isGameOver = true;
+        playerController?.EndGame();
 
         // play win animation
         StartCoroutine(WinRoutine());

@@ -93,8 +93,8 @@ public class Node : MonoBehaviour
         {
             Node newNode = graph.FindNodeAt(transform.position + direction);
 
-            // add to edges list if not already included
-            if (newNode != null && !HasNeighbor(newNode))
+            // add to edges list if not already included and not excluded specifically
+            if (newNode != null && !HasNeighbor(newNode) && !excludedNodes.Contains(newNode))
             {
                 Edge newEdge = new Edge { neighbor = newNode, isActive = true};
                 edges.Add(newEdge);

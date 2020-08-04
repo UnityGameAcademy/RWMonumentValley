@@ -39,7 +39,7 @@ public class Clickable : MonoBehaviour
             isClicked = true;
             Node clickedNode = graph.FindClosestNode(childNodes, hit.point, true);
 
-            Debug.Log("Clicked node = " + clickedNode.name);
+            //Debug.Log("Clicked node = " + clickedNode.name);
 
             // trigger some clickable event
             if (clickAction != null)
