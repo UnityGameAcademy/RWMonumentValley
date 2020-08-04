@@ -55,10 +55,11 @@ public class Pathfinder : MonoBehaviour
         exploredNodes = new List<Node>();
         pathNodes = new List<Node>();
 
-        graph.ResetNodes();
-
         isComplete = false;
         hasFoundGoal = false;
+
+        // remove results of previous searches
+        graph.ResetNodes();
 
         // first Node
         frontierNodes.Add(startNode);
@@ -137,7 +138,6 @@ public class Pathfinder : MonoBehaviour
             pathOfOne.Add(destinationNode);
             pathNodes = pathOfOne;
             isComplete = true;
-            //Debug.Log("FIND PATH COMPLETE WITH ONE-NODE....");
             return;
         }
 

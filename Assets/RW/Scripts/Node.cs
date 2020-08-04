@@ -12,6 +12,8 @@ public class Node : MonoBehaviour
 
     // connected neighboring nodes
     [SerializeField] private List<Edge> edges = new List<Edge>();
+    [SerializeField] private List<Node> excludedNodes;
+
     #endregion
 
     #region PRIVATE
@@ -30,33 +32,7 @@ public class Node : MonoBehaviour
         new Vector3(0f, 0f, 1f),
         new Vector3(0f, 0f, -1f),
 
-        //vertical neighbors
-        new Vector3(0f, 1f, 0f),
-        new Vector3(0f, -1f, 0f),
 
-        // platform to upper stair neighbors
-        new Vector3(1f, 0.5f, 0f),
-        new Vector3(-1f, 0.5f, 0f),
-        new Vector3(0f, 0.5f, 1f),
-        new Vector3(0f,0.5f, -1f),
-
-        // platform to lower stair neighbors
-        new Vector3(1f, -0.5f, 0f),
-        new Vector3(-1f, -0.5f, 0f),
-        new Vector3(0f, -0.5f, 1f),
-        new Vector3(0f,-0.5f, -1f),
-
-        // lower ramp to upper ramp neighbors
-        new Vector3(1f, 1f, 0f),
-        new Vector3(-1f, 1f, 0f),
-        new Vector3(0f, 1f, 1f),
-        new Vector3(0f, 1f, -1f),
-
-        // upper ramp to lower ramp neighbors
-        new Vector3(1f, -1f, 0f),
-        new Vector3(-1f, -1f, 0f),
-        new Vector3(0f, -1f, 1f),
-        new Vector3(0f, -1f, -1f),
 
     };
     #endregion

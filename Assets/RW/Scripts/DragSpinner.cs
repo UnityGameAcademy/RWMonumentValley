@@ -95,10 +95,8 @@ public class DragSpinner : MonoBehaviour
         isSpinning = false;
         RoundToRightAngles(targetToSpin);
 
-        if (nodeLinker)
-        {
-            nodeLinker.UpdateLinks();
-        }
+        nodeLinker?.UpdateLinks();
+
     }
 
     // round to nearest 90 degrees

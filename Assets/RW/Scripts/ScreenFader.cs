@@ -6,22 +6,42 @@ using UnityEngine.UI;
 [RequireComponent(typeof(MaskableGraphic))]
 public class ScreenFader : MonoBehaviour
 {
-    private MaskableGraphic image;
+    private MaskableGraphic[] images;
 
     private void Awake()
     {
-        image = GetComponent<MaskableGraphic>();
+        images = GetComponentsInChildren<MaskableGraphic>();
     }
 
     public void FadeOff(float fadeOffTime = 0.5f)
     {
-        image?.CrossFadeAlpha(0f, fadeOffTime, true);
+        foreach (MaskableGraphic image in images)
+        {
+            image?.CrossFadeAlpha(0f, fadeOffTime, true);
+            StartCoroutine(DisableRoutine(image, fadeOffTime));
+        }
+    }
 
+    IEnumerator DisableRoutine(MaskableGraphic graphic, float disableTime)
+    {
+        while (graphic.color.a > 0)
+        {
+            yield return null;
+        }
+
+        //yield return new WaitForSeconds(disableTime + 0.01f);
+        graphic.gameObject.SetActive(false);
+        
     }
 
     public void FadeOn(float fadeOnTime = 0.5f)
     {
-        image?.CrossFadeAlpha(1f, fadeOnTime, true);
+        foreach (MaskableGraphic image in images)
+        {
+            image.gameObject.SetActive(true);
+            image?.CrossFadeAlpha(0f, .01f, true);
+            image?.CrossFadeAlpha(1f, fadeOnTime, true);
+        }
     }
 
 }
