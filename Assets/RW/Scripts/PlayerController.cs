@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace RW.MonumentValley
 {
-    /**/
     // handles Player input and movement
     public class PlayerController : MonoBehaviour
     {
@@ -208,7 +207,5 @@ namespace RW.MonumentValley
         {
             animController?.SetBool("isMoving", state);
         }
-
     }
-
 }

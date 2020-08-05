@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace RW.MonumentValley
 {
-    /**/
     // utiltiy for fading UI Image or Text on/off
     [RequireComponent(typeof(MaskableGraphic))]
     public class ScreenFader : MonoBehaviour
@@ -44,7 +43,5 @@ namespace RW.MonumentValley
                 image?.CrossFadeAlpha(1f, fadeOnTime, true);
             }
         }
-
     }
-
 }

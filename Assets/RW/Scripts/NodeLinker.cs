@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace RW.MonumentValley
 {
-    /**/
+
     // activates or deactivates special Edges between Nodes
     public class NodeLinker : MonoBehaviour
     {
@@ -37,6 +37,7 @@ namespace RW.MonumentValley
             }
         }
 
+        // toggle active state between Neighbor nodes
         public void EnableLink(Node nodeA, Node nodeB, bool state)
         {
             if (nodeA == null || nodeB == null)

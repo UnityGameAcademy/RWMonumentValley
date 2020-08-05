@@ -45,7 +45,6 @@ namespace RW.MonumentValley
         // Vector representing axis of rotation
         private Vector3 axisDirection;
 
-
         void Start()
         {
             switch (spinAxis)
@@ -110,6 +109,17 @@ namespace RW.MonumentValley
 
         }
 
+        private void SnapSpinner()
+        {
+            isSpinning = false;
+
+            // snap to nearest 90-degree interval
+            RoundToRightAngles(targetToSpin);
+
+            // don't like referencing this directly but not using separate game Events to save on word count
+            nodeLinker?.UpdateLinks();
+        }
+
         // round to nearest 90 degrees
         private void RoundToRightAngles(Transform xform)
         {
@@ -123,6 +133,11 @@ namespace RW.MonumentValley
         public void EnableSpinner(bool state)
         {
             isActive = state;
+
+            if (!isActive)
+            {
+                SnapSpinner();
+            }
         }
     }
 
