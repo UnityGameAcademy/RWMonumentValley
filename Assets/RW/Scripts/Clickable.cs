@@ -3,46 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-// allows player to click on a block to set path goal
-[RequireComponent(typeof(Collider))]
-public class Clickable : MonoBehaviour
+namespace RW.MonumentValley
 {
-    // Nodes under this Transform
-    private Node[] childNodes;
 
-    // reference to Graph
-    private Graph graph;
-
-    // invoked when collider is clicked
-    public Action<Node> clickAction;
-
-    private void Start()
+    // allows player to click on a block to set path goal
+    [RequireComponent(typeof(Collider))]
+    public class Clickable : MonoBehaviour
     {
-        childNodes = GetComponentsInChildren<Node>();
-        graph = FindObjectOfType<Graph>();
-    }
+        // Nodes under this Transform
+        private Node[] childNodes;
 
-    private void OnMouseDown()
-    {
-        // validate components
-        if (graph == null || Camera.main == null)
+        // reference to Graph
+        private Graph graph;
+
+        // invoked when collider is clicked
+        public Action<Node> clickAction;
+
+        private void Start()
         {
-            return;
+            childNodes = GetComponentsInChildren<Node>();
+            graph = FindObjectOfType<Graph>();
         }
 
-        // raycast and find the path to the closest node
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100))
+        private void OnMouseDown()
         {
-            // find the closest Node in Screen space
-            Node clickedNode = graph.FindClosestNode(childNodes, hit.point, true);
-
-            // trigger event clickable event
-            if (clickAction != null)
+            // validate components
+            if (graph == null || Camera.main == null)
             {
-                clickAction.Invoke(clickedNode);
+                return;
+            }
+
+            // raycast and find the path to the closest node
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, 100))
+            {
+                // find the closest Node in Screen space
+                Node clickedNode = graph.FindClosestNode(childNodes, hit.point, true);
+
+                // trigger event clickable event
+                if (clickAction != null)
+                {
+                    clickAction.Invoke(clickedNode);
+                }
             }
         }
     }
+
 }

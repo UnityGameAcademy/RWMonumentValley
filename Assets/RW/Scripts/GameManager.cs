@@ -4,83 +4,87 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
-// monitors win condition and stops/pauses gameplay as needed
-public class GameManager : MonoBehaviour
+namespace RW.MonumentValley
 {
-    private PlayerController playerController;
 
-    private bool isGameOver;
-    public bool IsGameOver => isGameOver;
-
-    [SerializeField] Canvas UICanvas;
-    [SerializeField] ScreenFader screenFader;
-    [SerializeField] ScreenFader winText;
-
-    // invoked when starting the level
-    public UnityEvent initEvent;
-
-    // invoked before restarting the level
-    public UnityEvent restartEvent;
-
-    public float delayTime = 2f;
-
-    private void Awake()
+    // monitors win condition and stops/pauses gameplay as needed
+    public class GameManager : MonoBehaviour
     {
-        playerController = FindObjectOfType<PlayerController>();
-        UICanvas?.gameObject.SetActive(true);
-    }
+        private PlayerController playerController;
 
-    private void Start()
-    {
-        screenFader?.FadeOff(delayTime);
-        initEvent.Invoke();
-    }
+        private bool isGameOver;
+        public bool IsGameOver => isGameOver;
 
-    private void Update()
-    {
-        if (playerController != null && playerController.HasReachedGoal())
+        [SerializeField] Canvas UICanvas;
+        [SerializeField] ScreenFader screenFader;
+        [SerializeField] ScreenFader winText;
+
+        // invoked when starting the level
+        public UnityEvent initEvent;
+
+        // invoked before restarting the level
+        public UnityEvent restartEvent;
+
+        public float delayTime = 2f;
+
+        private void Awake()
         {
-            Win();
+            playerController = FindObjectOfType<PlayerController>();
+            UICanvas?.gameObject.SetActive(true);
         }
-    }
 
-    private void Win()
-    {
-        // flag to ensure Win only triggers once
-        if (isGameOver)
+        private void Start()
         {
-            return;
+            screenFader?.FadeOff(delayTime);
+            initEvent.Invoke();
         }
-        isGameOver = true;
 
-        // disable player controls
-        playerController?.EndGame();
+        private void Update()
+        {
+            if (playerController != null && playerController.HasReachedGoal())
+            {
+                Win();
+            }
+        }
 
-        // play win animation
-        StartCoroutine(WinRoutine());
+        private void Win()
+        {
+            // flag to ensure Win only triggers once
+            if (isGameOver)
+            {
+                return;
+            }
+            isGameOver = true;
+
+            // disable player controls
+            playerController?.EndGame();
+
+            // play win animation
+            StartCoroutine(WinRoutine());
+        }
+
+        private IEnumerator WinRoutine()
+        {
+            restartEvent?.Invoke();
+
+            // yield Animation time
+            yield return new WaitForSeconds(2f);
+
+        }
+
+        public void Restart(float delay)
+        {
+            StartCoroutine(RestartRoutine(delay));
+        }
+
+        private IEnumerator RestartRoutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            Scene activeScene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(activeScene.buildIndex);
+        }
+
+
     }
-
-    private IEnumerator WinRoutine()
-    {
-        restartEvent?.Invoke();
-
-        // yield Animation time
-        yield return new WaitForSeconds(2f);
-
-    }
-
-    public void Restart(float delay)
-    {
-        StartCoroutine(RestartRoutine(delay));
-    }
-
-    private IEnumerator RestartRoutine(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-
-        Scene activeScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(activeScene.buildIndex);
-    }
-
-
 }

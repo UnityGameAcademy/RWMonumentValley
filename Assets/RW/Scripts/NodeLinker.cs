@@ -4,57 +4,61 @@ using UnityEngine;
 using System;
 using UnityEngine.Events;
 
-// activates or deactivates special Edges between Nodes
-public class NodeLinker : MonoBehaviour
+namespace RW.MonumentValley
 {
-    [SerializeField] public Link[] links;
-
-    private void Start()
+    /**/
+    // activates or deactivates special Edges between Nodes
+    public class NodeLinker : MonoBehaviour
     {
-        UpdateLinks();
-    }
+        [SerializeField] public Link[] links;
 
-    // enable/disable based on transform's euler angles
-    public void UpdateLinks()
-    {
-        foreach (Link l in links)
+        private void Start()
         {
-            // check difference between desired and current angle
-            Quaternion targetAngle = Quaternion.Euler(l.activeEulerAngle);
-            float angleDiff = Quaternion.Angle(l.xform.rotation, targetAngle);
+            UpdateLinks();
+        }
 
-            if (Mathf.Abs(angleDiff) < 0.01f)
+        // enable/disable based on transform's euler angles
+        public void UpdateLinks()
+        {
+            foreach (Link l in links)
             {
-                EnableLink(l.nodeA, l.nodeB, true);
+                // check difference between desired and current angle
+                Quaternion targetAngle = Quaternion.Euler(l.activeEulerAngle);
+                float angleDiff = Quaternion.Angle(l.xform.rotation, targetAngle);
+
+                if (Mathf.Abs(angleDiff) < 0.01f)
+                {
+                    EnableLink(l.nodeA, l.nodeB, true);
+                }
+                else
+                {
+                    EnableLink(l.nodeA, l.nodeB, false);
+                }
             }
-            else
-            {
-                EnableLink(l.nodeA, l.nodeB, false);
-            }
+        }
+
+        public void EnableLink(Node nodeA, Node nodeB, bool state)
+        {
+            if (nodeA == null || nodeB == null)
+                return;
+
+            nodeA.EnableEdge(nodeB, state);
+            nodeB.EnableEdge(nodeA, state);
         }
     }
 
-    public void EnableLink(Node nodeA, Node nodeB, bool state)
+    // class to activate/deactivate special edges between Nodes
+    [System.Serializable]
+    public class Link
     {
-        if (nodeA == null || nodeB == null)
-            return;
+        public Node nodeA;
+        public Node nodeB;
 
-        nodeA.EnableEdge(nodeB, state);
-        nodeB.EnableEdge(nodeA, state);
+        // transform to check
+        public Transform xform;
+
+        // euler angle needed to activate link
+        public Vector3 activeEulerAngle;
+
     }
-}
-
-// class to activate/deactivate special edges between Nodes
-[System.Serializable]
-public class Link
-{
-    public Node nodeA;
-    public Node nodeB;
-
-    // transform to check
-    public Transform xform;
-
-    // euler angle needed to activate link
-    public Vector3 activeEulerAngle;
-
 }
