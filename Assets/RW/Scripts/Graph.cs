@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RW.MonumentValley
 {
-    /**/// management class for all Nodes
+    // management class for all Nodes
     public class Graph : MonoBehaviour
     {
         // all of the Nodes in the current level/maze

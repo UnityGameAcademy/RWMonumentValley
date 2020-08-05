@@ -7,17 +7,24 @@ namespace RW.MonumentValley
     // handles Player input and movement
     public class PlayerController : MonoBehaviour
     {
-        // visualization indicating where clicked
-        [SerializeField] GameObject cursor;
 
         // time to move one unit
         [Range(0.25f, 2f)]
         [SerializeField] private float moveTime = 0.25f;
+
+        // multiplier for walk AnimationClip
         [Range(0.5f, 3f)]
         [SerializeField] private float walkAnimSpeed = 1f;
 
-        // Animator Controller
+        // player Animator Controller
         [SerializeField] private Animator animController;
+
+        // click indicator
+        [SerializeField] Cursor cursor;
+
+        //[SerializeField] GameObject oldCursor;
+
+        // cursor AnimationController
         private Animator cursorAnimController;
 
         // pathfinding fields
@@ -43,25 +50,25 @@ namespace RW.MonumentValley
                 c.clickAction += OnClick;
             }
 
+            // initialize fields
             if (pathfinder != null)
             {
                 graph = pathfinder.GetComponent<Graph>();
             }
 
+            isMoving = false;
             isGameOver = false;
-            if (cursor != null)
-            {
-                cursorAnimController = cursor.GetComponent<Animator>();
-            }
         }
 
         private void Start()
         {
-            pathfinder?.SetStartNode(transform.position);
-            isMoving = false;
 
             // set AnimationClip speed
             animController?.SetFloat("walkSpeedMultiplier", walkAnimSpeed);
+
+            // always start on a Node
+            SnapToNearestNode();
+            pathfinder?.SetStartNode(transform.position);
         }
 
         private void OnDisable()
@@ -78,9 +85,10 @@ namespace RW.MonumentValley
             if (!isMoving && !isGameOver)
             {
 
-                // show cursor
-                cursor.transform.position = clickedNode.transform.position;
-                cursorAnimController.SetTrigger("ClickTrigger");
+                if (cursor != null)
+                {
+                    cursor.ShowCursor(clickedNode.transform.position);
+                }
 
                 pathfinder.FindPath(clickedNode);
                 FollowPath();
@@ -105,8 +113,6 @@ namespace RW.MonumentValley
 
                 FaceNextNode(currentNode.transform.position, nextNode.transform.position);
                 ToggleAnimation(isMoving);
-
-
 
                 yield return StartCoroutine(MoveToPositionRoutine(currentNode.transform.position, nextNode.transform.position));
                 i++;
@@ -168,6 +174,7 @@ namespace RW.MonumentValley
             currentNode = pathfinder.StartNode;
             nextNode = null;
         }
+
         // disable controls
         public void EndGame()
         {

@@ -20,7 +20,6 @@ namespace RW.MonumentValley
         [SerializeField] private List<Node> excludedNodes;
 
         [Space(20)]
-        [Tooltip("Invoked when Player enters this Node")]
         // invoked when Player enters this node
         public UnityEvent playerEvent;
 
@@ -100,7 +99,7 @@ namespace RW.MonumentValley
             }
         }
 
-        // is a Node currently in edges List?
+        // is a Node already in Edges List?
         private bool HasNeighbor(Node node)
         {
             foreach (Edge e in edges)
@@ -113,7 +112,7 @@ namespace RW.MonumentValley
             return false;
         }
 
-        // set state if an Edge exists between a target Node
+        // given a specific neighbor, sets active state
         public void EnableEdge(Node neighborNode, bool state)
         {
             foreach (Edge e in edges)
