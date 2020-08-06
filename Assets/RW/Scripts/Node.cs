@@ -88,7 +88,7 @@ namespace RW.MonumentValley
             // search through possible neighbor offsets
             foreach (Vector3 direction in neighborDirections)
             {
-                Node newNode = graph.FindNodeAt(transform.position + direction);
+                Node newNode = graph.FindClosestNode(transform.position + direction);
 
                 // add to edges list if not already included and not excluded specifically
                 if (newNode != null && !HasNeighbor(newNode) && !excludedNodes.Contains(newNode))
@@ -124,14 +124,5 @@ namespace RW.MonumentValley
             }
         }
     }
-
-    // connection/link to neighboring node
-    [System.Serializable]
-    public class Edge
-    {
-        public Node neighbor;
-        public bool isActive;
-    }
-
 
 }

@@ -22,19 +22,19 @@ namespace RW.MonumentValley
         }
 
         // locate the specific Node at target position within rounding error
-        public Node FindNodeAt(Vector3 pos)
-        {
-            foreach (Node n in allNodes)
-            {
-                Vector3 diff = n.transform.position - pos;
+        //public Node FindNodeAt(Vector3 pos)
+        //{
+        //    foreach (Node n in allNodes)
+        //    {
+        //        Vector3 diff = n.transform.position - pos;
 
-                if (diff.sqrMagnitude < 0.01f)
-                {
-                    return n;
-                }
-            }
-            return null;
-        }
+        //        if (diff.sqrMagnitude < 0.01f)
+        //        {
+        //            return n;
+        //        }
+        //    }
+        //    return null;
+        //}
 
         // locate the closest Node in a given array (screen Mode: true = screen space, false = world space)
         public Node FindClosestNode(Node[] nodes, Vector3 pos, bool screenMode)
@@ -63,7 +63,7 @@ namespace RW.MonumentValley
         }
 
         // find the closest Node in the entire Graph
-        public Node FindClosestNode(Vector3 pos, bool screenMode = false)
+        public Node FindClosestNode(Vector3 pos, bool screenMode = true)
         {
             return FindClosestNode(allNodes.ToArray(), pos, screenMode);
         }
