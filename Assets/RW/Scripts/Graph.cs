@@ -36,7 +36,7 @@ namespace RW.MonumentValley
             return null;
         }
 
-        // locate the closest Node in a given array (screen Mode true = screen space, false = world space)
+        // locate the closest Node in a given array (screen Mode: true = screen space, false = world space)
         public Node FindClosestNode(Node[] nodes, Vector3 pos, bool screenMode)
         {
             Node closestNode = null;

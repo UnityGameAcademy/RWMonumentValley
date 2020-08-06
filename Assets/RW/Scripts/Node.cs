@@ -26,14 +26,14 @@ namespace RW.MonumentValley
         private Graph graph;
         private Node previousNode;
 
-        // 3d compass directions to check for horizontal neighbors automatically
+        // 3d compass directions to check for horizontal neighbors automatically (east/west/north/south)
         public static Vector3[] neighborDirections =
         {
-        new Vector3(1f, 0f, 0f),
-        new Vector3(-1f, 0f, 0f),
-        new Vector3(0f, 0f, 1f),
-        new Vector3(0f, 0f, -1f),
-    };
+            new Vector3(1f, 0f, 0f), 
+            new Vector3(-1f, 0f, 0f),
+            new Vector3(0f, 0f, 1f),
+            new Vector3(0f, 0f, -1f),
+        };
 
         public Node PreviousNode { get { return previousNode; } set { previousNode = value; } }
         public List<Edge> Edges => edges;
@@ -79,9 +79,9 @@ namespace RW.MonumentValley
         // fill out edge connections to neighboring nodes automatically
         private void FindNeighbors()
         {
+            // validate graph
             if (graph == null)
             {
-                Debug.Log(gameObject.name + " NODE FindNeighbors: missing graph!");
                 return;
             }
 

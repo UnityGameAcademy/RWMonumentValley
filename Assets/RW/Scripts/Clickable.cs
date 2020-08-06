@@ -5,7 +5,6 @@ using System;
 
 namespace RW.MonumentValley
 {
-
     // allows player to click on a block to set path goal
     [RequireComponent(typeof(Collider))]
     public class Clickable : MonoBehaviour
@@ -28,7 +27,7 @@ namespace RW.MonumentValley
         private void OnMouseDown()
         {
             // validate components
-            if (graph == null || Camera.main == null)
+            if (graph == null)
             {
                 return;
             }
@@ -42,12 +41,9 @@ namespace RW.MonumentValley
                 Node clickedNode = graph.FindClosestNode(childNodes, hit.point, true);
 
                 // trigger event clickable event
-                if (clickAction != null)
-                {
-                    clickAction.Invoke(clickedNode);
-                }
+                clickAction?.Invoke(clickedNode);
+
             }
         }
     }
-
 }
