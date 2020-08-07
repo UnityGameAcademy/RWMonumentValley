@@ -104,7 +104,7 @@ namespace RW.MonumentValley
         {
             foreach (Edge e in edges)
             {
-                if (e.neighbor.Equals(node))
+                if (e.neighbor != null && e.neighbor.Equals(node))
                 {
                     return true;
                 }

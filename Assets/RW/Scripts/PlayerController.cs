@@ -88,6 +88,7 @@ namespace RW.MonumentValley
                 if (cursor != null)
                 {
                     cursor.ShowCursor(clickedNode.transform.position);
+
                 }
 
                 pathfinder.FindPath(clickedNode);

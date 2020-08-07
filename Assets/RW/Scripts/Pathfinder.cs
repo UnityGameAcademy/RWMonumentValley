@@ -48,6 +48,7 @@ namespace RW.MonumentValley
         // initialize all Nodes/lists
         private void InitGraph()
         {
+
             if (graph == null || startNode == null || destinationNode == null)
             {
                 return;
@@ -186,9 +187,9 @@ namespace RW.MonumentValley
             }
         }
 
-        public void FindPath(Node goal)
+        public void FindPath(Node destinationNode)
         {
-            destinationNode = goal;
+            this.destinationNode = destinationNode;
             FindPath();
         }
 

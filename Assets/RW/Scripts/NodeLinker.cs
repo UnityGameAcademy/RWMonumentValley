@@ -47,7 +47,7 @@ namespace RW.MonumentValley
         }
     }
 
-    // class to activate/deactivate special edges between Nodes
+    // class to activate/deactivate special edges between Nodes based on rotation
     [System.Serializable]
     public class Link
     {
