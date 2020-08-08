@@ -60,7 +60,7 @@ namespace RW.MonumentValley
         {
             foreach (MeshRenderer meshRenderer in meshRenderers)
             {
-                meshRenderer.material.SetFloat(highlightProperty, onOff ? 1f : 0f);
+                meshRenderer?.material.SetFloat(highlightProperty, onOff ? 1f : 0f);
             }
         }
 

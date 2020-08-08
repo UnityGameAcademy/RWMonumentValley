@@ -53,8 +53,6 @@ namespace RW.MonumentValley
         // click indicator
         [SerializeField] Cursor cursor;
 
-        //[SerializeField] GameObject oldCursor;
-
         // cursor AnimationController
         private Animator cursorAnimController;
 
@@ -115,14 +113,10 @@ namespace RW.MonumentValley
         {
             if (!isMoving && !isGameOver)
             {
+                cursor?.ShowCursor(clickedNode.transform.position);
 
-                if (cursor != null)
-                {
-                    cursor.ShowCursor(clickedNode.transform.position);
 
-                }
-
-                pathfinder.FindPath(clickedNode);
+                pathfinder?.FindPath(clickedNode);
                 FollowPath();
             }
         }
@@ -233,11 +227,12 @@ namespace RW.MonumentValley
             // distance from camera
             float cameraDistance = 0f;
 
+            // project the nextNode onto the plane and face toward projected point
             if (plane.Raycast(rayToNextPosition, out cameraDistance))
             {
                 Vector3 nextPositionOnPlane = rayToNextPosition.GetPoint(cameraDistance);
-                Vector3 diffVector = nextPositionOnPlane - startPosition;
-                transform.rotation = Quaternion.LookRotation(diffVector);
+                Vector3 directionToNextNode = nextPositionOnPlane - startPosition;
+                transform.rotation = Quaternion.LookRotation(directionToNextNode);
             }
         }
 

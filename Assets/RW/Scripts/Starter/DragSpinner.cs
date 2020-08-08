@@ -56,7 +56,7 @@ namespace RW.MonumentValley
         // minimum distance in pixels before activating mouse drag
         [SerializeField] private int minDragDist = 10;
 
-        [SerializeField] private NodeLinker nodeLinker;
+        [SerializeField] private Linker linker;
 
         // vector from pivot to mouse pointer
         private Vector2 directionToMouse;
@@ -135,7 +135,7 @@ namespace RW.MonumentValley
             RoundToRightAngles(targetToSpin);
 
             // don't like referencing this directly but not using separate game Events to save on word count
-            nodeLinker?.UpdateLinks();
+            linker?.UpdateLinks();
 
         }
 
@@ -147,7 +147,7 @@ namespace RW.MonumentValley
             RoundToRightAngles(targetToSpin);
 
             // don't like referencing this directly but not using separate game Events to save on word count
-            nodeLinker?.UpdateLinks();
+            linker?.UpdateLinks();
         }
 
         // round to nearest 90 degrees

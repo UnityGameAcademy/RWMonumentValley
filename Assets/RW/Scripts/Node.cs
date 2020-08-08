@@ -110,16 +110,11 @@ namespace RW.MonumentValley
         // fill out edge connections to neighboring nodes automatically
         private void FindNeighbors()
         {
-            // validate graph
-            if (graph == null)
-            {
-                return;
-            }
 
             // search through possible neighbor offsets
             foreach (Vector3 direction in neighborDirections)
             {
-                Node newNode = graph.FindClosestNode(transform.position + direction);
+                Node newNode = graph?.FindNodeAt(transform.position + direction);
 
                 // add to edges list if not already included and not excluded specifically
                 if (newNode != null && !HasNeighbor(newNode) && !excludedNodes.Contains(newNode))
