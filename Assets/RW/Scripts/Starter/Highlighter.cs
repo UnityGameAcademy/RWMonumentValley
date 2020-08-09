@@ -64,6 +64,7 @@ namespace RW.MonumentValley
             }
         }
 
+        // highlight material if mouse is hovering 
         private void OnMouseOver()
         {
             if (isEnabled)

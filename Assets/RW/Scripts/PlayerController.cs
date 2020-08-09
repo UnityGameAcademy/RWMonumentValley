@@ -111,68 +111,95 @@ namespace RW.MonumentValley
 
         private void OnClick(Node clickedNode)
         {
-            if (!isMoving && !isGameOver)
+
+            if (isGameOver || clickedNode == null)
+                return;
+
+            cursor?.ShowCursor(clickedNode.transform.position);
+            pathfinder?.FindPath(currentNode, clickedNode);
+            List<Node> newPath = pathfinder?.PathNodes;
+
+            if (isMoving)
             {
-                cursor?.ShowCursor(clickedNode.transform.position);
+                StopAllCoroutines();
+            }
 
+            // evaluate if we have a valid path to clickedNode
 
-                pathfinder?.FindPath(clickedNode);
-                FollowPath();
+            if (newPath.Count > 1 && newPath[newPath.Count - 1] == clickedNode)
+            {
+                FollowPath(newPath);
+            }
+            else
+            {
+                Debug.Log("PLAYERCONTROLLER OnClick: Invalid path.  Doing nothing....");
             }
         }
 
-        public void FollowPath()
+        public void FollowPath(List<Node> path)
         {
-            StartCoroutine(FollowPathRoutine());
+            StartCoroutine(FollowPathRoutine(path));
         }
 
-        private IEnumerator FollowPathRoutine()
+        private IEnumerator FollowPathRoutine(List<Node> path)
         {
+
             isMoving = true;
-            int i = 0;
             hasReachedDestination = false;
 
-            while (i < pathfinder.PathNodes.Count - 1)
+            if (path == null || path.Count <= 1)
             {
-                currentNode = pathfinder.PathNodes[i];
-                nextNode = pathfinder.PathNodes[i + 1];
-
-                FaceNextNode(currentNode.transform.position, nextNode.transform.position);
-                ToggleAnimation(isMoving);
-
-                yield return StartCoroutine(MoveToPositionRoutine(currentNode.transform.position, nextNode.transform.position));
-                i++;
+                Debug.Log("PLAYERCONTROLLER FollowPathRoutine: invalid path");
             }
+            else
+            {
+                ToggleAnimation(isMoving);
+                for (int i = 0; i < path.Count; i++)
+                {
+                    // 
+                    nextNode = path[i];
+                    FaceNextNode(transform.position, nextNode.transform.position);
+  
+                    yield return StartCoroutine(MoveToPositionRoutine(transform.position, nextNode));
+                }
+            }
+
             hasReachedDestination = true;
             isMoving = false;
             ToggleAnimation(isMoving);
+            pathfinder?.ClearPath();
         }
 
-        private IEnumerator MoveToPositionRoutine(Vector3 startPosition, Vector3 targetPosition)
+        private IEnumerator MoveToPositionRoutine(Vector3 startPosition, Node targetNode)
         {
-            float t = 0;
+
+            float elapsedTime = 0;
+
+            // validate move time
             moveTime = Mathf.Clamp(moveTime, 0.1f, 5f);
 
-            while (t < 1)
+            while (elapsedTime < moveTime && targetNode != null)
             {
-                t += Time.deltaTime / moveTime;
-                transform.position = Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp(t, 0, 1));
+
+                elapsedTime += Time.deltaTime;
+                float lerpValue = Mathf.Clamp(elapsedTime / moveTime, 0f, 1f);
+                Vector3 targetPos = targetNode.transform.position;
+                transform.position = Vector3.Lerp(startPosition, targetPos, lerpValue);
 
                 // if over halfway, change parent to next node
-                if (t > 0.51f)
+                if (lerpValue > 0.51f)
                 {
-                    transform.parent = nextNode.transform;
+                    transform.parent = targetNode.transform;
+                    currentNode = targetNode;
 
                     // invoke UnityEvent associated with next Node
-                    nextNode?.playerEvent?.Invoke();
+                    targetNode.playerEvent?.Invoke();
+
                 }
 
                 // wait one frame
                 yield return null;
             }
-
-            UpdatePlayerNode();
-
         }
 
         public void SnapToNearestNode()
@@ -180,6 +207,7 @@ namespace RW.MonumentValley
             Node nearestNode = graph?.FindClosestNode(transform.position, true);
             if (nearestNode != null)
             {
+                currentNode = nearestNode;
                 transform.position = nearestNode.transform.position;
             }
         }
@@ -192,13 +220,6 @@ namespace RW.MonumentValley
             float distanceSqr = (graph.GoalNode.transform.position - transform.position).sqrMagnitude;
 
             return (distanceSqr < 0.01f);
-        }
-
-        private void UpdatePlayerNode()
-        {
-            pathfinder?.SetStartNode(transform.position);
-            currentNode = pathfinder.StartNode;
-            nextNode = null;
         }
 
         // disable controls

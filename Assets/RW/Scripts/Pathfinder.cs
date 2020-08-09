@@ -69,6 +69,7 @@ namespace RW.MonumentValley
         public Node StartNode { get { return startNode; } set { startNode = value; } }
         public Node DestinationNode { get { return destinationNode; } set { destinationNode = value; } }
         public List<Node> PathNodes => pathNodes;
+        public bool HasFoundGoal => hasFoundGoal;
 
         private void Awake()
         {
@@ -129,30 +130,6 @@ namespace RW.MonumentValley
                     frontierNodes.Add(node.Edges[i].neighbor);
                 }
             }
-        }
-
-        // given a goal node, follow PreviousNode breadcrumbs to create a path
-        private List<Node> GetPathNodes()
-        {
-            // create a new list of Nodes
-            List<Node> path = new List<Node>();
-
-            // start with the goal Node
-            if (destinationNode == null)
-            {
-                return path;
-            }
-            path.Add(destinationNode);
-
-            // follow the breadcrumb trail, creating a path until it ends
-            Node currentNode = destinationNode.PreviousNode;
-
-            while (currentNode != null)
-            {
-                path.Insert(0, currentNode);
-                currentNode = currentNode.PreviousNode;
-            }
-            return path;
         }
 
         public void FindPath()
@@ -221,6 +198,42 @@ namespace RW.MonumentValley
         {
             this.destinationNode = destinationNode;
             FindPath();
+        }
+
+        public void FindPath(Node startNode, Node destinationNode)
+        {
+            this.destinationNode = destinationNode;
+            this.startNode = startNode;
+            FindPath();
+        }
+
+        public void ClearPath()
+        {
+            pathNodes = new List<Node>();
+        }
+
+        // given a goal node, follow PreviousNode breadcrumbs to create a path
+        public List<Node> GetPathNodes()
+        {
+            // create a new list of Nodes
+            List<Node> path = new List<Node>();
+
+            // start with the goal Node
+            if (destinationNode == null)
+            {
+                return path;
+            }
+            path.Add(destinationNode);
+
+            // follow the breadcrumb trail, creating a path until it ends
+            Node currentNode = destinationNode.PreviousNode;
+
+            while (currentNode != null)
+            {
+                path.Insert(0, currentNode);
+                currentNode = currentNode.PreviousNode;
+            }
+            return path;
         }
 
         private void OnDrawGizmos()
